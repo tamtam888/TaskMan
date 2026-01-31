@@ -1,4 +1,3 @@
-// src/components/TaskManApp.jsx
 import React, { useState, useEffect } from "react";
 import Title from "./Title";
 import TaskInput from "./TaskInput";
@@ -6,14 +5,13 @@ import TaskList from "./TaskList";
 import DoneStatusTabs from "./DoneStatusTabs";
 import "./TaskManApp.css";
 
-// ✅ הפנייה לתיקיית public/sounds
 const addSound = process.env.PUBLIC_URL + "/sounds/add.mp3";
 const completeSound = process.env.PUBLIC_URL + "/sounds/complete.mp3";
 const deleteSound = process.env.PUBLIC_URL + "/sounds/trash.mp3";
 const levelupSound = process.env.PUBLIC_URL + "/sounds/levelup.mp3";
 const gameoverSound = process.env.PUBLIC_URL + "/sounds/gameover.mp3";
 
-const TaskManApp = ({ tasks, setTasks, score, setScore, level, setLevel, user }) => {
+const TaskManApp = ({ tasks, setTasks, score, setScore, level, setLevel, user, token }) => {
   const [tab, setTab] = useState("all");
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [eatingTaskId, setEatingTaskId] = useState(null);
@@ -22,6 +20,33 @@ const TaskManApp = ({ tasks, setTasks, score, setScore, level, setLevel, user })
   const playSound = (sound) => {
     const audio = new Audio(sound);
     audio.play();
+  };
+
+  const calculatePoints = (priority, deadline) => {
+    let basePoints = 0;
+    
+    if (priority === "high") basePoints = 30;
+    else if (priority === "normal") basePoints = 20;
+    else basePoints = 10;
+
+    if (deadline) {
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      const [day, month, year] = deadline.split("/");
+      const deadlineDate = new Date(year, month - 1, day);
+      deadlineDate.setHours(0, 0, 0, 0);
+      const daysUntilDeadline = Math.ceil((deadlineDate - now) / (1000 * 60 * 60 * 24));
+
+      if (daysUntilDeadline <= 1) {
+        basePoints += 20;
+      } else if (daysUntilDeadline <= 3) {
+        basePoints += 10;
+      } else if (daysUntilDeadline <= 7) {
+        basePoints += 5;
+      }
+    }
+
+    return basePoints;
   };
 
   const handleAddTask = (text, priority, date, category, deadline, participants) => {
@@ -62,17 +87,13 @@ const TaskManApp = ({ tasks, setTasks, score, setScore, level, setLevel, user })
   };
 
   const handleToggleTaskCompleted = (id) => {
-    let points = 0;
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
         if (task.id === id) {
-          if (task.priority === "high") points = 30;
-          else if (task.priority === "normal") points = 20;
-          else points = 10;
-
           const updated = { ...task, completed: !task.completed };
 
           if (updated.completed) {
+            const points = calculatePoints(task.priority, task.deadline);
             const newScore = score + points;
             setScore(newScore);
 
@@ -88,6 +109,7 @@ const TaskManApp = ({ tasks, setTasks, score, setScore, level, setLevel, user })
               setTimeout(() => setShowLevelUp(false), 3000);
             }
           } else {
+            const points = calculatePoints(task.priority, task.deadline);
             const newScore = score - points;
             setScore(newScore);
             setLevel(Math.max(1, Math.floor(newScore / 100)));
@@ -159,6 +181,7 @@ const TaskManApp = ({ tasks, setTasks, score, setScore, level, setLevel, user })
           eatingTaskId={eatingTaskId}
           tab={tab}
           onEditTask={handleEditTask}
+          accessToken={token}
         />
       )}
 

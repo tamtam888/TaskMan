@@ -1,8 +1,7 @@
-// src/components/TaskItem.jsx
 import React, { useState } from "react";
 import "./TaskItem.css";
 
-function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit }) {
+function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit, accessToken }) {
   console.log("🔍 TaskItem קיבל משימה:", task);
 
   const formatDateForDisplay = (dateString) => {
@@ -35,6 +34,7 @@ function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit }) {
   );
   const [editedPriority, setEditedPriority] = useState(task.priority);
   const [editedUsers, setEditedUsers] = useState(usersDisplay);
+  const [syncing, setSyncing] = useState(false);
 
   const isValidDate = (dateString) => {
     const regex = /^\d{2}\/\d{2}\/\d{4}$/;
@@ -88,14 +88,126 @@ function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit }) {
     setEditedDeadline(v);
   };
 
-  // ✅ פונקציה לסנכרון ליומן (בינתיים לוג בלבד)
-  const handleSyncToCalendar = () => {
-    const deadlineForCalendar =
-      task.deadline && task.deadline !== ""
-        ? task.deadline
-        : new Date().toLocaleDateString("en-GB"); // היום אם אין דדליין
-    console.log(`📅 Syncing task "${task.text}" with deadline ${deadlineForCalendar} to Google Calendar...`);
-    // כאן תחברי ל-Google Calendar API בהמשך
+  const handleSyncToCalendar = async () => {
+    if (!accessToken) {
+      alert("Please sign in with Google to sync to calendar");
+      return;
+    }
+
+    if (!task.deadline) {
+      alert("Task needs a deadline to sync to calendar");
+      return;
+    }
+
+    if (task.syncedToCalendar) {
+      alert("✅ This task is already synced to Google Calendar!");
+      return;
+    }
+
+    setSyncing(true);
+
+    try {
+      const [day, month, year] = task.deadline.split("/");
+      const deadlineDate = new Date(year, month - 1, day, 9, 0, 0);
+      const endDate = new Date(deadlineDate.getTime() + 60 * 60 * 1000);
+
+      const attendees = [];
+      if (task.users && Array.isArray(task.users)) {
+        task.users.forEach(email => {
+          if (email && email.includes("@")) {
+            attendees.push({ email: email.trim() });
+          }
+        });
+      }
+
+      const priorityEmoji = {
+        high: "😡",
+        normal: "🤔",
+        low: "🤢"
+      };
+
+      const categoryEmoji = {
+        shopping: "🛒",
+        mission: "📋",
+        other: "💡"
+      };
+
+      let description = `Task from TaskMan\n\n`;
+      description += `${priorityEmoji[task.priority]} Priority: ${task.priority}\n`;
+      description += `${categoryEmoji[task.category]} Category: ${task.category}\n`;
+      if (task.participants) {
+        description += `👥 Participants: ${task.participants}\n`;
+      }
+      const basePoints = task.priority === "high" ? 30 : task.priority === "normal" ? 20 : 10;
+      description += `\n🎯 Base Points: ${basePoints}`;
+
+      const colorMap = {
+        high: "11",
+        normal: "5",
+        low: "9",
+      };
+
+      const event = {
+        summary: `📋 ${task.text}`,
+        description: description,
+        start: {
+          dateTime: deadlineDate.toISOString(),
+          timeZone: "Asia/Jerusalem",
+        },
+        end: {
+          dateTime: endDate.toISOString(),
+          timeZone: "Asia/Jerusalem",
+        },
+        reminders: {
+          useDefault: false,
+          overrides: [
+            { method: "popup", minutes: 3 * 24 * 60 },
+            { method: "popup", minutes: 1 * 24 * 60 },
+            { method: "popup", minutes: 60 },
+            { method: "email", minutes: 3 * 24 * 60 },
+            { method: "email", minutes: 1 * 24 * 60 },
+          ],
+        },
+        colorId: colorMap[task.priority] || "5",
+        attendees: attendees.length > 0 ? attendees : undefined,
+        sendUpdates: attendees.length > 0 ? "all" : "none",
+      };
+
+      const response = await fetch(
+        "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(event),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || "Failed to add to calendar");
+      }
+
+      const result = await response.json();
+      
+      const updatedTask = {
+        ...task,
+        syncedToCalendar: true,
+        calendarEventId: result.id
+      };
+      onEdit(updatedTask);
+      
+      alert(`✅ Task synced to Google Calendar!`);
+      console.log("Calendar event created:", result.htmlLink);
+
+    } catch (error) {
+      console.error("Sync error:", error);
+      alert(`❌ Failed to sync: ${error.message}`);
+    } finally {
+      setSyncing(false);
+    }
   };
 
   return (
@@ -166,16 +278,15 @@ function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit }) {
 
           {task.date && <span className="task-date">{task.date}</span>}
 
-          {/* 🗑️ כפתור מחיקה */}
           <button onClick={() => onDelete(task.id)} title="Remove">🗑️</button>
 
-          {/* 📅 כפתור סנכרון ליומן */}
           <button
             className="sync-btn"
             onClick={handleSyncToCalendar}
-            title="Sync to Google Calendar"
+            title={task.syncedToCalendar ? "Already synced to Google Calendar" : "Sync to Google Calendar"}
+            disabled={syncing}
           >
-            📅
+            {syncing ? "⏳" : task.syncedToCalendar ? "✅" : "📅"}
           </button>
 
           {eatingTaskId === task.id && (

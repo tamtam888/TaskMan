@@ -12,7 +12,6 @@ function App() {
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(1);
 
-  // טוען משימות לפי המשתמש
   useEffect(() => {
     if (user) {
       const savedTasks = localStorage.getItem(`taskman-tasks-${user.email}`);
@@ -24,7 +23,6 @@ function App() {
     }
   }, [user]);
 
-  // שומר לפי המשתמש
   useEffect(() => {
     if (user) {
       localStorage.setItem(
@@ -46,7 +44,6 @@ function App() {
     }
   }, [level, user]);
 
-  // מסך התחברות
   if (!user) {
     return (
       <div className="app-body">
@@ -68,7 +65,6 @@ function App() {
     );
   }
 
-  // אפליקציה ראשית לאחר התחברות
   return (
     <div className="app-body">
       <div className="app-container">
