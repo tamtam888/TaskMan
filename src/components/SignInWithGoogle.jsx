@@ -2,29 +2,18 @@ import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
 
 const SignInWithGoogle = ({ onSignIn }) => {
-  const handleLoginSuccess = async (credentialResponse) => {
+  const handleLoginSuccess = (credentialResponse) => {
     try {
-      const token = credentialResponse.credential;
-      const base64Payload = token.split(".")[1];
-      const decodedPayload = JSON.parse(atob(base64Payload));
-      
-      const userInfoResponse = await fetch(
-        "https://www.googleapis.com/oauth2/v2/userinfo",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      
-      const userInfo = await userInfoResponse.json();
-      
+      const idToken = credentialResponse.credential;
+      const [, payload] = idToken.split(".");
+      const decoded = JSON.parse(atob(payload));
+
       const user = {
-        name: decodedPayload.name || userInfo.name,
-        email: decodedPayload.email || userInfo.email,
-        accessToken: token,
+        name: decoded.name,
+        email: decoded.email,
+        picture: decoded.picture,
       };
-      
+
       onSignIn(user);
     } catch (err) {
       console.error("Login error:", err);

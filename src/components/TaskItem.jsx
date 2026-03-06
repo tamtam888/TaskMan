@@ -1,8 +1,19 @@
 import React, { useState } from "react";
 import "./TaskItem.css";
+import { sanitizeText, auditSanitize } from "../security/sanitize";
 
-function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit, accessToken }) {
-  console.log("🔍 TaskItem קיבל משימה:", task);
+const GCalIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className="gcal-icon">
+    <rect x="1" y="2" width="16" height="15" rx="2" fill="white" stroke="#DADCE0" strokeWidth="1.2"/>
+    <rect x="1" y="2" width="16" height="5.5" rx="2" fill="#4285F4"/>
+    <rect x="1" y="5.5" width="16" height="2" fill="#4285F4"/>
+    <line x1="5" y1="0.5" x2="5" y2="3.5" stroke="#4285F4" strokeWidth="1.5" strokeLinecap="round"/>
+    <line x1="13" y1="0.5" x2="13" y2="3.5" stroke="#4285F4" strokeWidth="1.5" strokeLinecap="round"/>
+    <text x="9" y="15" textAnchor="middle" fontSize="6.5" fontWeight="700" fill="#4285F4" fontFamily="Arial,sans-serif">31</text>
+  </svg>
+);
+
+function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit, calendarToken, onRequestCalendarAccess }) {
 
   const formatDateForDisplay = (dateString) => {
     if (!dateString) return "";
@@ -62,18 +73,21 @@ function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit, accessToken 
       return;
     }
 
+    const sanitizedText = sanitizeText(editedText);
+    auditSanitize("task text", editedText, sanitizedText);
+
     const usersArray =
       editedUsers.trim() === ""
         ? []
-        : editedUsers.split(",").map((u) => u.trim()).filter(Boolean);
+        : editedUsers.split(",").map((u) => sanitizeText(u.trim())).filter(Boolean);
 
     const updatedTask = {
       ...task,
-      text: editedText,
-      deadline: formatDateForStorage(editedDeadline),
+      text: sanitizedText,
+      deadline: editedDeadline,
       priority: editedPriority,
       users: usersArray,
-      participants: editedUsers.trim(),
+      participants: usersArray.join(", "),
     };
 
     onEdit(updatedTask);
@@ -89,26 +103,32 @@ function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit, accessToken 
   };
 
   const handleSyncToCalendar = async () => {
-    if (!accessToken) {
-      alert("Please sign in with Google to sync to calendar");
-      return;
-    }
-
     if (!task.deadline) {
       alert("Task needs a deadline to sync to calendar");
       return;
     }
 
     if (task.syncedToCalendar) {
-      alert("✅ This task is already synced to Google Calendar!");
+      window.open("https://calendar.google.com", "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    if (!calendarToken) {
+      onRequestCalendarAccess();
+      alert("Please grant calendar access in the popup, then click the calendar icon again.");
       return;
     }
 
     setSyncing(true);
 
     try {
-      const [day, month, year] = task.deadline.split("/");
-      const deadlineDate = new Date(year, month - 1, day, 9, 0, 0);
+      let deadlineDate;
+      if (task.deadline.includes("/")) {
+        const [day, month, year] = task.deadline.split("/");
+        deadlineDate = new Date(year, month - 1, day, 9, 0, 0);
+      } else {
+        deadlineDate = new Date(task.deadline + "T09:00:00");
+      }
       const endDate = new Date(deadlineDate.getTime() + 60 * 60 * 1000);
 
       const attendees = [];
@@ -178,7 +198,7 @@ function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit, accessToken 
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${calendarToken}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(event),
@@ -198,9 +218,8 @@ function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit, accessToken 
         calendarEventId: result.id
       };
       onEdit(updatedTask);
-      
-      alert(`✅ Task synced to Google Calendar!`);
-      console.log("Calendar event created:", result.htmlLink);
+
+      window.open("https://calendar.google.com", "_blank", "noopener,noreferrer");
 
     } catch (error) {
       console.error("Sync error:", error);
@@ -252,8 +271,8 @@ function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit, accessToken 
             aria-label="Edit users"
           />
           <div className="edit-buttons">
-            <button onClick={handleSave}>✅</button>
-            <button onClick={() => setIsEditing(false)}>❌</button>
+            <button onClick={handleSave} title="Save changes">✅</button>
+            <button onClick={() => setIsEditing(false)} title="Cancel edit">❌</button>
           </div>
         </div>
       ) : (
@@ -286,7 +305,7 @@ function TaskItem({ task, onToggle, onDelete, eatingTaskId, onEdit, accessToken 
             title={task.syncedToCalendar ? "Already synced to Google Calendar" : "Sync to Google Calendar"}
             disabled={syncing}
           >
-            {syncing ? "⏳" : task.syncedToCalendar ? "✅" : "📅"}
+            {syncing ? "⏳" : task.syncedToCalendar ? "✅" : <GCalIcon />}
           </button>
 
           {eatingTaskId === task.id && (

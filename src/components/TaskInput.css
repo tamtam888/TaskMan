@@ -14,16 +14,16 @@
   font-size: 14px;
   color: #000;
   border: 2px solid brown;
-  border-radius: 20px; /* יותר עגול */
+  border-radius: 20px;
   box-sizing: border-box;
   background-color: white;
   outline: none;
-  min-width: 100px; /* יותר צר */
+  min-width: 100px;
   cursor: pointer;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* שדה תאריך צר */
+/* date field */
 .deadline-date-input {
   width: 100px !important;
   padding: 10px;
@@ -32,7 +32,7 @@
   border: 2px solid brown;
 }
 
-/* שדה משתתפים רחב יותר */
+/* participants field */
 .input-task-container input[aria-label="Participants"] {
   min-width: 220px;
   width: 280px;
@@ -48,7 +48,7 @@
   font-weight: bold;
   border-radius: 20px;
   font-style: italic;
-  min-width: 10px; /* יותר צר */
+  min-width: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -57,4 +57,3 @@
   background-color: #ffe0b3;
   box-shadow: 0 4px 8px rgba(255, 200, 150, 0.2);
 }
-

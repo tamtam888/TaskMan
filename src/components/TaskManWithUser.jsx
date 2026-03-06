@@ -7,7 +7,7 @@ const TaskManWithUser = () => {
   const [user, setUser] = useState(null);
   const [tasks, setTasks] = useState([]);
 
-  // טען משימות לפי המשתמש
+  // Load tasks by user
   useEffect(() => {
     if (user) {
       const saved = localStorage.getItem(`taskman-tasks-${user.email}`);
@@ -15,7 +15,7 @@ const TaskManWithUser = () => {
     }
   }, [user]);
 
-  // שמור משימות לפי המשתמש
+  // Save tasks by user
   useEffect(() => {
     if (user) {
       localStorage.setItem(

@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import { format } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import "./TaskInput.css";
+import { sanitizeText, auditSanitize } from "../security/sanitize";
 
 function TaskInput({ onAddTask }) {
   const [inputValue, setInputValue] = useState("");
@@ -14,10 +15,13 @@ function TaskInput({ onAddTask }) {
 
   const handleAdd = () => {
     const trimmedValue = inputValue.trim();
+    const sanitizedValue = sanitizeText(trimmedValue);
+    auditSanitize("task text", trimmedValue, sanitizedValue);
+
     const now = new Date();
     now.setHours(0, 0, 0, 0);
 
-    if (!trimmedValue || !priority || !category || !deadline) {
+    if (!sanitizedValue || !priority || !category || !deadline) {
       alert("Please enter all fields: mission, priority, category, and deadline!");
       return;
     }
@@ -38,13 +42,11 @@ function TaskInput({ onAddTask }) {
 
     const participantsArray = (participants || "")
       .split(",")
-      .map((p) => p.trim())
+      .map((p) => sanitizeText(p.trim()))
       .filter(Boolean);
 
-    console.log("🧪 Creating task with participants:", participantsArray);
-
     onAddTask(
-      trimmedValue,
+      sanitizedValue,
       priority,
       creationDate,
       category,

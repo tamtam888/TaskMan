@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;          /* ✅ מאפשר שבירה במסכים קטנים */
+  flex-wrap: wrap;
   width: 100%;
   box-sizing: border-box;
   box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
@@ -97,7 +97,7 @@
   width: 100%;
 }
 
-/* 🖉 כפתור עריכה */
+/* edit button */
 .edit-btn {
   position: absolute;
   top: -10px;
@@ -116,7 +116,7 @@
   background-color: #ffbf00;
 }
 
-/* טופס עריכה */
+/* edit form */
 .edit-form {
   display: flex;
   flex-direction: column;
@@ -147,7 +147,7 @@
   unicode-bidi: plaintext;
 }
 
-/* ✅ טקסט המשימה */
+/* task text */
 .task-text {
   flex: 1;
   min-width: 0;
@@ -182,12 +182,16 @@
   margin-inline-start: 6px;
 }
 
+.gcal-icon {
+  vertical-align: middle;
+}
+
 .task-participants {
   margin-inline-start: 8px;
   white-space: nowrap;
 }
 
-/* 📱 התאמות למסכים קטנים */
+/* mobile */
 @media (max-width: 600px) {
   .task-item {
     font-size: 13px;

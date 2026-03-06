@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import TaskItem from "./TaskItem";
 
-// עוזר לפורמט DD/MM/YYYY
 function formatDDMMYYYY(d) {
   const dd = String(d.getDate()).padStart(2, "0");
   const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -11,7 +10,6 @@ function formatDDMMYYYY(d) {
   return `${dd}/${mm}/${yyyy}`;
 }
 
-// נשתמש היום כערך התחלה חוקי
 const today = new Date();
 const sampleTask = {
   id: "1",
@@ -19,7 +17,7 @@ const sampleTask = {
   priority: "normal",
   completed: false,
   category: "Shopping",
-  deadline: formatDDMMYYYY(today), // היום - חוקי
+  deadline: formatDDMMYYYY(today),
   date: formatDDMMYYYY(today),
 };
 
@@ -36,7 +34,6 @@ test("Edit task with valid input", () => {
     target: { value: "Buy eggs" },
   });
 
-  // מחר = עתידי => יעבור ולידציה
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   fireEvent.change(screen.getByLabelText("Edit deadline"), {
@@ -62,7 +59,7 @@ test("Show alert on invalid past date", () => {
   fireEvent.click(screen.getByTitle("Edit task"));
 
   fireEvent.change(screen.getByLabelText("Edit deadline"), {
-    target: { value: "01/01/2020" }, // עבר
+    target: { value: "01/01/2020" },
   });
 
   fireEvent.click(screen.getByTitle("Save changes"));
@@ -81,7 +78,7 @@ test("Show alert on invalid format", () => {
   fireEvent.click(screen.getByTitle("Edit task"));
 
   fireEvent.change(screen.getByLabelText("Edit deadline"), {
-    target: { value: "2025-08-01" }, // פורמט לא DD/MM/YYYY
+    target: { value: "2025-08-01" },
   });
 
   fireEvent.click(screen.getByTitle("Save changes"));

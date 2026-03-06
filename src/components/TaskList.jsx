@@ -2,7 +2,7 @@ import React from "react";
 import TaskItem from "./TaskItem";
 import "./TaskList.css";
 
-function TaskList({ tasks, removeTask, toggleTaskCompleted, eatingTaskId, tab, onEditTask, accessToken }) {
+function TaskList({ tasks, removeTask, toggleTaskCompleted, eatingTaskId, tab, onEditTask, calendarToken, onRequestCalendarAccess }) {
   if (tasks.length === 0) {
     return <p>No tasks yet. Start adding some missions! 🎮</p>;
   }
@@ -17,7 +17,8 @@ function TaskList({ tasks, removeTask, toggleTaskCompleted, eatingTaskId, tab, o
           onDelete={removeTask}
           eatingTaskId={eatingTaskId}
           onEdit={onEditTask}
-          accessToken={accessToken}
+          calendarToken={calendarToken}
+          onRequestCalendarAccess={onRequestCalendarAccess}
         />
       ))}
     </ul>

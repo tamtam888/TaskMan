@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 import "./App.css";
 import TodoApp from "./components/TodoApp";
 import TaskManApp from "./components/TaskManApp";
@@ -6,11 +7,17 @@ import SignInWithGoogle from "./components/SignInWithGoogle";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [calendarToken, setCalendarToken] = useState(null);
   const [showGameVersion, setShowGameVersion] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(1);
+
+  const requestCalendarAccess = useGoogleLogin({
+    scope: "https://www.googleapis.com/auth/calendar",
+    onSuccess: (tokenResponse) => setCalendarToken(tokenResponse.access_token),
+    onError: () => alert("Could not get calendar access. Please try again."),
+  });
 
   useEffect(() => {
     if (user) {
@@ -25,10 +32,7 @@ function App() {
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem(
-        `taskman-tasks-${user.email}`,
-        JSON.stringify(tasks)
-      );
+      localStorage.setItem(`taskman-tasks-${user.email}`, JSON.stringify(tasks));
     }
   }, [tasks, user]);
 
@@ -48,12 +52,7 @@ function App() {
     return (
       <div className="app-body">
         <div className="app-container">
-          <SignInWithGoogle
-            onSignIn={(userData) => {
-              setUser(userData);
-              setToken(userData.accessToken);
-            }}
-          />
+          <SignInWithGoogle onSignIn={setUser} />
           <button
             className="mode-switch-button"
             onClick={() => setShowGameVersion(!showGameVersion)}
@@ -78,7 +77,7 @@ function App() {
             className="signout-button"
             onClick={() => {
               setUser(null);
-              setToken(null);
+              setCalendarToken(null);
             }}
           >
             Sign Out
@@ -101,10 +100,16 @@ function App() {
             level={level}
             setLevel={setLevel}
             user={user}
-            token={token}
+            calendarToken={calendarToken}
+            onRequestCalendarAccess={requestCalendarAccess}
           />
         ) : (
-          <TodoApp tasks={tasks} setTasks={setTasks} />
+          <TodoApp
+            tasks={tasks}
+            setTasks={setTasks}
+            calendarToken={calendarToken}
+            onRequestCalendarAccess={requestCalendarAccess}
+          />
         )}
       </div>
     </div>

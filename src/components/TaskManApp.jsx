@@ -11,7 +11,7 @@ const deleteSound = process.env.PUBLIC_URL + "/sounds/trash.mp3";
 const levelupSound = process.env.PUBLIC_URL + "/sounds/levelup.mp3";
 const gameoverSound = process.env.PUBLIC_URL + "/sounds/gameover.mp3";
 
-const TaskManApp = ({ tasks, setTasks, score, setScore, level, setLevel, user, token }) => {
+const TaskManApp = ({ tasks, setTasks, score, setScore, level, setLevel, user, calendarToken, onRequestCalendarAccess }) => {
   const [tab, setTab] = useState("all");
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [eatingTaskId, setEatingTaskId] = useState(null);
@@ -32,8 +32,13 @@ const TaskManApp = ({ tasks, setTasks, score, setScore, level, setLevel, user, t
     if (deadline) {
       const now = new Date();
       now.setHours(0, 0, 0, 0);
-      const [day, month, year] = deadline.split("/");
-      const deadlineDate = new Date(year, month - 1, day);
+      let deadlineDate;
+      if (deadline.includes("/")) {
+        const [day, month, year] = deadline.split("/");
+        deadlineDate = new Date(year, month - 1, day);
+      } else {
+        deadlineDate = new Date(deadline);
+      }
       deadlineDate.setHours(0, 0, 0, 0);
       const daysUntilDeadline = Math.ceil((deadlineDate - now) / (1000 * 60 * 60 * 24));
 
@@ -181,7 +186,8 @@ const TaskManApp = ({ tasks, setTasks, score, setScore, level, setLevel, user, t
           eatingTaskId={eatingTaskId}
           tab={tab}
           onEditTask={handleEditTask}
-          accessToken={token}
+          calendarToken={calendarToken}
+          onRequestCalendarAccess={onRequestCalendarAccess}
         />
       )}
 

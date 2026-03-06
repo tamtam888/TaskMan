@@ -5,7 +5,7 @@ import TaskList from "./TaskList";
 import DoneStatusTabs from "./DoneStatusTabs";
 import "../App.css";
 
-function TodoApp({ tasks = [], setTasks: externalSetTasks }) {
+function TodoApp({ tasks = [], setTasks: externalSetTasks, calendarToken, onRequestCalendarAccess }) {
   const [internalTasks, internalSetTasks] = useState(tasks);
   const [tab, setTab] = useState("all");
 
@@ -43,7 +43,6 @@ function TodoApp({ tasks = [], setTasks: externalSetTasks }) {
     );
   };
 
-  // ✅ תיקון פילטר – השוואה ב-lowercase
   const filteredTasks = actualTasks.filter((task) => {
     if (!tab) return true;
     if (tab.toLowerCase() === "all") return true;
@@ -60,9 +59,10 @@ function TodoApp({ tasks = [], setTasks: externalSetTasks }) {
         removeTask={removeTask}
         toggleTaskCompleted={toggleTaskCompleted}
         onEditTask={handleEditTask}
+        calendarToken={calendarToken}
+        onRequestCalendarAccess={onRequestCalendarAccess}
       />
 
-      {/* ✅ הוספתי חתימה כמו בגרסה של TaskMan */}
       <div className="signature">© TM by TK ~ 2025</div>
     </div>
   );
