@@ -1,0 +1,31 @@
+# ======================
+#  TaskMan Project Licenses
+# ======================
+
+# --- Runtime Dependencies ---
+react - MIT License
+react-dom - MIT License
+react-scripts - MIT License
+styled-components - MIT License
+date-fns - MIT License
+dompurify - Apache-2.0 License
+react-datepicker - MIT License
+@react-oauth/google - MIT License
+big-integer - MIT License
+web-vitals - Apache-2.0 License
+
+# --- Development Dependencies ---
+@babel/preset-env - MIT License
+@babel/preset-react - MIT License
+babel-jest - MIT License
+jest - MIT License
+jest-environment-jsdom - MIT License
+@testing-library/react - MIT License
+@testing-library/jest-dom - MIT License
+@testing-library/user-event - MIT License
+eslint - MIT License
+eslint-config-prettier - MIT License
+eslint-plugin-prettier - MIT License
+eslint-plugin-react - MIT License
+prettier - MIT License
+identity-obj-proxy - MIT License

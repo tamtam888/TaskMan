@@ -1,0 +1,163 @@
+/* body */
+body {
+  background-color: #f8f4d1;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* app wrapper */
+.app-body {
+  background-color: #f8f4d1;
+  color: brown;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* task container */
+.todo-container {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 24px;
+  position: relative;
+  padding: 24px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+/* task list reset */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* signature */
+.signature {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 12px;
+  color: black;
+  font-style: italic;
+  font-weight: bold;
+  margin-top: 25px;
+  margin-bottom: 0;
+}
+
+/* mode switch button */
+.mode-switch-button {
+  background-color: #f8e541;
+  border: 2px solid black;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px;
+  font-style: italic;
+  margin-top: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mode-switch-button:hover {
+  background-color: hwb(51 54% 1%);
+}
+
+/* welcome bar */
+.welcome-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  margin: 12px auto 16px;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.welcome-text {
+  font-weight: bold;
+  font-size: 16px;
+  color: #a0522d;
+}
+
+.signout-button {
+  background-color: #ffd700;
+  border: 2px solid black;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px;
+  font-style: italic;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signout-button:hover {
+  background-color: #f2e287;
+  box-shadow: 0 4px 8px rgba(255, 200, 150, 0.2);
+}
+
+/* calendar sync button */
+.calendar-sync-btn {
+  background-color: #ffd700;
+  border: 2px solid black;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px;
+  font-style: italic;
+  cursor: pointer;
+  margin-top: 16px;
+  width: 100%;
+  max-width: 480px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  display: block;
+}
+
+.calendar-sync-btn:hover {
+  background-color: #f2e287;
+  box-shadow: 0 4px 8px rgba(255, 200, 150, 0.2);
+}
+
+/* sign in container */
+.signin-container {
+  text-align: center;
+}
+
+.google-login-btn {
+  background-color: #ffd700;
+  border: 2px solid black;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px;
+  font-style: italic;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.google-login-btn:hover {
+  background-color: #f2e287;
+  box-shadow: 0 4px 8px rgba(255, 200, 150, 0.2);
+}
+
+/* mobile */
+@media (max-width: 600px) {
+  .calendar-sync-btn {
+    font-size: 13px;
+    padding: 12px;
+  }
+}

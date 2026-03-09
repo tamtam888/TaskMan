@@ -1,0 +1,26 @@
+.task-date {
+  position: absolute;
+  bottom: 4px;
+  right: 8px;
+  font-size: 10px;
+  color: black;
+}
+
+.task-text {
+  flex-grow: 1;
+  font-size: 16px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+}
+
+.emoji-left {
+  font-size: 20px;
+  margin: 0 6px;
+}
+.task-users {
+  font-size: 13px;
+  color: #222;
+  display: block;
+  margin-top: 4px;
+  margin-left: 30px;
+}

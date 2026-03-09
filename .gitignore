@@ -1,0 +1,48 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# VS Code settings
+.vscode/
+
+# dotenv environment variables
+.env
+.env.local
+.env.*.local
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Jest coverage output
+coverage/
+
+# Output from ESLint or Prettier (אם בעתיד תשתמשי)
+eslintcache/
+.prettiercache/
+
+# Cache
+.cache/
+*.log
+
+# macOS + Windows system junk
+ehthumbs.db
+Icon?
+desktop.ini
+
+# Optional: exclude sound files (אם תרצי שלא ייכנסו לגיט)
+# sounds/
+
