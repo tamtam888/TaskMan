@@ -1,66 +1,173 @@
-# TaskMan 🕹️
+# TaskMan
 
-**TaskMan** is a retro-inspired task management app built with **React**
-that turns productivity into a game.
-Created as part of a full-stack software engineering program using CI/CD, Docker, testing, and Git best practices.
+**TaskMan** is a gamified task management app built with React. It turns everyday tasks into a retro-style productivity experience with scoring, levels, priorities, deadlines, categories, sound effects, and a responsive UI.
 
----
+The project was created as part of a full-stack software engineering program and demonstrates practical frontend development, component-based architecture, testing, CI/CD, Docker, and Git best practices.
 
-## ✨ Features (v0100)
+## Live Demo
 
-- ✅ Add, complete, and delete tasks
-- ✅ Prioritize tasks: **High | Normal | Low**
-- ✅ Filter by category: **All / Shopping / Mission / Other / ✅ Completed!!**
-- ✅ Organize tasks into separate lists by category
-- ✅ Track score and level based on task completion
-- ✅ Toggle between **Game Mode** and **Classic Mode**
-- ✅ **Google Sign-In** for per-user authentication
-- ✅ Each user’s tasks, score, and level are saved locally
-- ✅ Mobile-responsive retro pixel UI
-- ✅ **Edit existing tasks (inline)**
-- ✅ **Due dates with overdue detection**
-- ✅ **Participants** on each task (optional; unique list per task)
-- ✅ **Sound effects** for key actions
-- ✅ **Tests** (Jest + React Testing Library) pass in CI
+https://taskman-yellow-user.vercel.app
+
+## Repository
+
+https://github.com/tamtam888/TaskMan
 
 ---
 
-## 🧠 Planned (v0101)
+## Features
 
-- Deadline-near notifications (e.g., T-24h / T-1h)
-- User **Timeline** to visualize progress (creation → deadline) with color changes; overdue may **blink**
-- Points/level logic updated to reflect “near deadline” status
-- Per-participant **calendar sync** (events spanning from creation date → deadline)
-- Notifications & simple collaboration flows
-
----
-
-## ️🛠 Tech Stack
-
-- **Frontend**: React (Functional Components + Hooks)  
-- **Auth**: Google OAuth2 (via `@react-oauth/google`)  
-- **Styling**: Custom CSS (Retro-inspired + Responsive)  
-- **Testing**: React Testing Library  
-- **CI/CD**: GitHub Actions  
-- **Containerization**: Docker & DockerHub  
-- **Dev Tools**: ESLint, Prettier, Husky, Lightning  
-
-- **Frontend**: React (Functional Components + Hooks)
-- **Auth**: Google OAuth2 (`@react-oauth/google`)
-- **Styling**: Custom CSS (retro-inspired, responsive)
-- **Testing**: Jest + React Testing Library
-- **CI/CD**: GitHub Actions (CI & CD)
-- **Containerization**: Docker & DockerHub
-- **Dev Tools**: ESLint, Prettier
-
+- Add, complete, edit, and delete tasks
+- Prioritize tasks by level: High, Normal, Low
+- Organize tasks by category: All, Shopping, Mission, Other, Completed
+- Toggle between Game Mode and Classic Mode
+- Track score and level based on completed tasks
+- Google Sign-In for user authentication
+- Save each user's tasks, score, and level locally
+- Add due dates with overdue detection
+- Add optional participants to each task
+- Play sound effects for key actions
+- Responsive retro pixel-style UI
+- Unit tests with Jest and React Testing Library
+- CI/CD workflow with GitHub Actions
+- Dockerized production build served with Nginx
 
 ---
 
-## 📦 Getting Started
+## Tech Stack
+
+| Area | Technology |
+|------|------------|
+| Frontend | React, JavaScript, HTML5, CSS3 |
+| Auth | Google OAuth2 with `@react-oauth/google` |
+| Date Handling | date-fns, react-datepicker |
+| Security | DOMPurify for user input sanitization |
+| Testing | Jest, React Testing Library |
+| CI/CD | GitHub Actions |
+| Containerization | Docker, Nginx |
+| Styling | Custom CSS, responsive retro UI |
+| Tooling | ESLint, Prettier |
+
+---
+
+## Project Structure
+
+```text
+TaskMan/
+  public/             Static assets
+  src/                React source code
+    components/       Reusable UI components
+    tests/            Test files and test helpers
+  .github/workflows/  CI/CD workflows
+  Dockerfile          Production Docker build
+  nginx.conf          Nginx configuration for Docker
+  package.json        Scripts and dependencies
+```
+
+---
+
+## Getting Started
 
 ```bash
-git clone https://github.com/tamtam888/TaskMan-Yellow-user.git
-cd TaskMan-Yellow-user
+git clone https://github.com/tamtam888/TaskMan.git
+cd TaskMan
 npm install
 npm start
-https://taskman-yellow-user.vercel.app
+```
+
+The app will run locally at:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## Available Scripts
+
+```bash
+npm start
+```
+
+Runs the app in development mode.
+
+```bash
+npm run build
+```
+
+Creates a production build in the `build` folder.
+
+```bash
+npm test
+```
+
+Runs the test suite with React Testing Library.
+
+---
+
+## Docker
+
+Build the Docker image:
+
+```bash
+docker build -t taskman-app .
+```
+
+Run the container:
+
+```bash
+docker run -p 8080:80 taskman-app
+```
+
+Open:
+
+```text
+http://localhost:8080
+```
+
+---
+
+## CI/CD
+
+The repository includes GitHub Actions workflows for:
+
+- Installing dependencies
+- Running tests
+- Building the React app
+- Uploading the build artifact
+- Building a Docker image
+- Optional deployment integration through configured secrets
+
+---
+
+## Product Focus
+
+TaskMan was designed to make task management feel more engaging by combining simple productivity flows with game-like feedback. The goal was not only to build a working task app, but also to practice clean component structure, accessible UI controls, user input handling, automated checks, and deployment-oriented project setup.
+
+---
+
+## Planned Improvements
+
+- Deadline-near notifications
+- Visual timeline for task progress from creation date to deadline
+- Calendar sync for tasks with participants
+- Improved collaboration flows
+- More advanced scoring logic based on deadline status
+
+---
+
+## What This Project Demonstrates
+
+- React component architecture
+- State handling with functional components and hooks
+- Form validation and input sanitization
+- Authentication integration with Google OAuth
+- Responsive UI implementation
+- Testing with Jest and React Testing Library
+- CI/CD setup with GitHub Actions
+- Docker-based production deployment
+
+---
+
+## License
+
+This project is for portfolio and learning purposes.
